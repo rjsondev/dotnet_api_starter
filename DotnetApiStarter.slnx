@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/apps/" />
+  <Folder Name="/apps/api/">
+    <Project Path="apps/api/DotnetApiStarter.Api/DotnetApiStarter.Api.csproj" />
+  </Folder>
+  <Folder Name="/core/">
+    <Project Path="core/DotnetApiStarter.Application/DotnetApiStarter.Application.csproj" />
+    <Project Path="core/DotnetApiStarter.Domain/DotnetApiStarter.Domain.csproj" />
+    <Project Path="core/DotnetApiStarter.Infrastructure/DotnetApiStarter.Infrastructure.csproj" />
+  </Folder>
+</Solution>
