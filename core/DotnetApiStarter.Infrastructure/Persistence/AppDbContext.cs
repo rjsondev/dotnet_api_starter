@@ -1,4 +1,5 @@
 ﻿using DotnetApiStarter.Application.Common.Interfaces;
+using DotnetApiStarter.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace DotnetApiStarter.Infrastructure.Persistence;
@@ -9,6 +10,8 @@ public class AppDbContext : DbContext, IApplicationDbContext
         : base(options)
     {
     }
+
+    public DbSet<Product> Product => Set<Product>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
