@@ -9,6 +9,9 @@ builder.Services.AddOpenApi();
 // # Dependency Injection for Infrastructure Layer
 builder.Services.AddInfrastructure(builder.Configuration);
 
+// # Register commands and queries with MediatR
+builder.Services.AddApplication();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

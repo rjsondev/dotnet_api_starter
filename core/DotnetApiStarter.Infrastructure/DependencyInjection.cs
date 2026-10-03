@@ -1,4 +1,5 @@
-﻿using DotnetApiStarter.Application.Common.Interfaces;
+﻿using DotnetApiStarter.Application;
+using DotnetApiStarter.Application.Common.Interfaces;
 using DotnetApiStarter.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -19,6 +20,17 @@ public static class DependencyInjection
 
         // # Register the IApplicationDbContext interface with the AppDbContext implementation
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<AppDbContext>());
+
+        return services;
+    }
+
+    public static IServiceCollection AddApplication(this IServiceCollection services)
+    {
+        // cfg (configuration object) - an instance of MediatRServiceConfiguration provided by the AddMediatR method.
+        // It allows you to configure MediatR services, such as registering handlers, behaviors, and other components.
+        services.AddMediatR(cfg => {
+            cfg.RegisterServicesFromAssembly(typeof(AssemblyMarker).Assembly);
+        });
 
         return services;
     }
