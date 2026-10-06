@@ -3,4 +3,15 @@
 GET {{DotnetApiStarter.Api_HostAddress}}/weatherforecast/
 Accept: application/json
 
-###
+### Create a New Product
+POST {{DotnetApiStarter.Api_HostAddress}}/api/product
+Content-Type: application/json
+{
+  "sku": "LAPTOP-001",
+  "barcode": "laptop-001",
+  "name": "Gaming Laptop",
+  "description": "Gaming laptop",
+  "unitprice": 45000,
+  "reorderlevel": 5,
+  "createdbyid": 1
+}

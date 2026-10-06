@@ -10,4 +10,4 @@ public sealed record CreateProductCommand(
     decimal UnitPrice,
     int Reorderlevel,
     int CreatedById
-    ) : IRequest<CreateProductResult>;
+) : IRequest<CreateProductResult>;

@@ -1,3 +1,4 @@
+using DotnetApiStarter.Api.Features.Products;
 using DotnetApiStarter.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,6 +42,7 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast");
 
+app.MapProductEndpoints();
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
