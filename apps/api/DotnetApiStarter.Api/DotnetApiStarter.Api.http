@@ -15,3 +15,6 @@ Content-Type: application/json
   "reorderlevel": 5,
   "createdbyid": 1
 }
+
+### Get Products
+GET {{DotnetApiStarter.Api_HostAddress}}/api/product
