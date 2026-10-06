@@ -32,3 +32,12 @@ Content-Type: application/json
   "reorderlevel": 10,
   "modifiedbyid": 2
 }
+
+### Change Product Status
+PATCH {{DotnetApiStarter.Api_HostAddress}}/api/product/1/status
+Content-Type: application/json
+{
+  "id": 1,
+  "isactive": false,
+  "modifiedbyid": 2
+}
