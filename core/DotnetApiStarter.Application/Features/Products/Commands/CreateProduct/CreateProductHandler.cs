@@ -1,4 +1,5 @@
-﻿using DotnetApiStarter.Application.Common.Interfaces;
+﻿using DotnetApiStarter.Application.Common.Exceptions;
+using DotnetApiStarter.Application.Common.Interfaces;
 using DotnetApiStarter.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +21,7 @@ public sealed class CreateProductHandler : IRequestHandler<CreateProductCommand,
 
         if (exists)
         {
-            //Exception handling for duplicate SKU
+            throw new ConflictException($"Product SKU '{request.Sku}' already exists.");
         }
 
         var product = new Product
