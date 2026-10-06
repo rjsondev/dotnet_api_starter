@@ -18,3 +18,17 @@ Content-Type: application/json
 
 ### Get Products
 GET {{DotnetApiStarter.Api_HostAddress}}/api/product
+
+### Update a Product
+PUT {{DotnetApiStarter.Api_HostAddress}}/api/product/1
+Content-Type: application/json
+{
+  "id": 1,
+  "sku": "LAPTOP-001x",
+  "barcode": "laptop-001x",
+  "name": "Gaming Laptop",
+  "description": "Gaming laptop",
+  "unitprice": 55000,
+  "reorderlevel": 10,
+  "modifiedbyid": 2
+}

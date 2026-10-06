@@ -1,5 +1,6 @@
 ﻿using DotnetApiStarter.Api.Common.Responses;
 using DotnetApiStarter.Application.Features.Products.Commands.CreateProduct;
+using DotnetApiStarter.Application.Features.Products.Commands.UpdateProduct;
 using DotnetApiStarter.Application.Features.Products.Queries.GetProducts;
 using MediatR;
 
@@ -13,6 +14,7 @@ public static class ProductEndpoints
 
         group.MapPost("/", CreateProduct);
         group.MapGet("/", GetProducts);
+        group.MapPut("/{id:int}", UpdateProduct);
 
         return app;
     }
@@ -20,7 +22,6 @@ public static class ProductEndpoints
     private static async Task<IResult> CreateProduct(CreateProductCommand command, ISender sender, CancellationToken cancellationToken)
     {
         var result = await sender.Send(command, cancellationToken);
-
         var response = ResponseResult<CreateProductResult>.Ok(result, "Product created successfully.");
 
         return Results.Created(string.Empty, response);
@@ -30,5 +31,22 @@ public static class ProductEndpoints
         var result = await sender.Send(new GetProductsQuery(), cancellationToken);
 
         return Results.Ok(ResponseResult<IReadOnlyList<ProductDto>>.Ok(result, "Products retrieved successfully."));
+    }
+
+    private static async Task<IResult> UpdateProduct(int id, UpdateProductCommand command, ISender sender, CancellationToken cancellationToken)
+    {
+        if (id != command.Id)
+        {
+            return Results.BadRequest();
+        }
+
+        //await sender.Send(command, cancellationToken);
+
+        //return Results.NoContent();
+
+        var result = await sender.Send(command, cancellationToken);
+        var response = ResponseResult<UpdateProductResult>.Ok(result, "Product updated successfully.");
+
+        return Results.Ok(response);
     }
 }
