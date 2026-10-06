@@ -1,3 +1,5 @@
+using DotnetApiStarter.Api.Features.Products;
+using DotnetApiStarter.Api.Middleware;
 using DotnetApiStarter.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +10,13 @@ builder.Services.AddOpenApi();
 
 // # Dependency Injection for Infrastructure Layer
 builder.Services.AddInfrastructure(builder.Configuration);
+
+// # Register commands and queries with MediatR
+builder.Services.AddApplication();
+
+// # Register the global exception handler and problem details middleware
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
@@ -38,6 +47,8 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast");
 
+app.UseExceptionHandler();
+app.MapProductEndpoints();
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
