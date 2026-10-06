@@ -41,3 +41,6 @@ Content-Type: application/json
   "isactive": false,
   "modifiedbyid": 2
 }
+
+### Delete a Product
+DELETE {{DotnetApiStarter.Api_HostAddress}}/api/product/1

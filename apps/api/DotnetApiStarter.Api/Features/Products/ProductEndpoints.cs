@@ -1,5 +1,6 @@
 ﻿using DotnetApiStarter.Api.Common.Responses;
 using DotnetApiStarter.Application.Features.Products.Commands.CreateProduct;
+using DotnetApiStarter.Application.Features.Products.Commands.DeleteProduct;
 using DotnetApiStarter.Application.Features.Products.Commands.SetProductStatus;
 using DotnetApiStarter.Application.Features.Products.Commands.UpdateProduct;
 using DotnetApiStarter.Application.Features.Products.Queries.GetProducts;
@@ -17,6 +18,7 @@ public static class ProductEndpoints
         group.MapGet("/", GetProducts);
         group.MapPut("/{id:int}", UpdateProduct);
         group.MapPatch("/{id:int}/status", SetProductStatus);
+        group.MapDelete("/{id:int}", DeleteProduct);
 
         return app;
     }
@@ -28,6 +30,7 @@ public static class ProductEndpoints
 
         return Results.Created(string.Empty, response);
     }
+    
     private static async Task<IResult> GetProducts(ISender sender, CancellationToken cancellationToken)
     {
         var result = await sender.Send(new GetProductsQuery(), cancellationToken);
@@ -63,6 +66,19 @@ public static class ProductEndpoints
 
         var result = await sender.Send(command, cancellationToken);
         var response = ResponseResult<SetProductStatusResult>.Ok(result, "Product status updated successfully.");
+
+        return Results.Ok(response);
+    }
+
+    private static async Task<IResult> DeleteProduct(int id, ISender sender, CancellationToken cancellationToken)
+    {
+        var command = new DeleteProductCommand(id);
+
+        //await sender.Send(command, cancellationToken);
+        //return Results.NoContent();
+
+        var result = await sender.Send(command, cancellationToken);
+        var response = ResponseResult<DeleteProductResult>.Ok(result, "Product deleted successfully.");
 
         return Results.Ok(response);
     }
