@@ -1,6 +1,8 @@
 ﻿using DotnetApiStarter.Application;
+using DotnetApiStarter.Application.Common.Behaviors;
 using DotnetApiStarter.Application.Common.Interfaces;
 using DotnetApiStarter.Infrastructure.Persistence;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,10 +28,14 @@ public static class DependencyInjection
 
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
+        // # Register all validators from the assembly containing the AssemblyMarker class
+        services.AddValidatorsFromAssembly(typeof(AssemblyMarker).Assembly);
+
         // cfg (configuration object) - an instance of MediatRServiceConfiguration provided by the AddMediatR method.
         // It allows you to configure MediatR services, such as registering handlers, behaviors, and other components.
         services.AddMediatR(cfg => {
             cfg.RegisterServicesFromAssembly(typeof(AssemblyMarker).Assembly);
+            cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
         });
 
         return services;
