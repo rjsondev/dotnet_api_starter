@@ -19,6 +19,9 @@ Content-Type: application/json
 ### Get Products
 GET {{DotnetApiStarter.Api_HostAddress}}/api/product
 
+### Get Products by Page
+GET {{DotnetApiStarter.Api_HostAddress}}/api/product/paged?pageNumber=1&pageSize=20
+
 ### Update a Product
 PUT {{DotnetApiStarter.Api_HostAddress}}/api/product/1
 Content-Type: application/json

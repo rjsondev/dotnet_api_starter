@@ -4,6 +4,7 @@ using DotnetApiStarter.Application.Features.Products.Commands.DeleteProduct;
 using DotnetApiStarter.Application.Features.Products.Commands.SetProductStatus;
 using DotnetApiStarter.Application.Features.Products.Commands.UpdateProduct;
 using DotnetApiStarter.Application.Features.Products.Queries.GetProducts;
+using DotnetApiStarter.Application.Features.Products.Queries.GetProductsPaged;
 using MediatR;
 
 namespace DotnetApiStarter.Api.Features.Products;
@@ -15,6 +16,7 @@ public static class ProductEndpoints
         var group = app.MapGroup("/api/product").WithTags("Products");
 
         group.MapPost("/", CreateProduct);
+        group.MapGet("/paged", GetProductsPaged);
         group.MapGet("/", GetProducts);
         group.MapPut("/{id:int}", UpdateProduct);
         group.MapPatch("/{id:int}/status", SetProductStatus);
@@ -36,6 +38,19 @@ public static class ProductEndpoints
         var result = await sender.Send(new GetProductsQuery(), cancellationToken);
 
         return Results.Ok(ResponseResult<IReadOnlyList<ProductDto>>.Ok(result, "Products retrieved successfully."));
+    }
+
+    private static async Task<IResult> GetProductsPaged(
+        int? pageNumber,
+        int? pageSize,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(
+            new GetProductsPagedQuery(pageNumber ?? 1, Math.Min(pageSize ?? 20, 100)),
+            cancellationToken);
+
+        return Results.Ok(ResponseResult<GetProductsPagedResult>.Ok(result, "Products retrieved successfully."));
     }
 
     private static async Task<IResult> UpdateProduct(int id, UpdateProductCommand command, ISender sender, CancellationToken cancellationToken)
