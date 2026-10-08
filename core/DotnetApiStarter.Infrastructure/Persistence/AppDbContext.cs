@@ -13,6 +13,8 @@ public class AppDbContext : DbContext, IApplicationDbContext
 
     public DbSet<Product> Product => Set<Product>();
 
+    public DbSet<Category> Category => Set<Category>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
