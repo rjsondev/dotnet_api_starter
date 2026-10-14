@@ -1,3 +1,4 @@
+using DotnetApiStarter.Api.Extensions;
 using DotnetApiStarter.Api.Features.Products;
 using DotnetApiStarter.Api.Middleware;
 using DotnetApiStarter.Infrastructure;
@@ -32,6 +33,9 @@ try
     builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
     builder.Services.AddProblemDetails();
 
+    // # Register JWT authentication and authorization
+    builder.Services.AddJwtAuthentication(builder.Configuration);
+
     var app = builder.Build();
 
     // Configure the HTTP request pipeline.
@@ -61,9 +65,10 @@ try
     // })
     // .WithName("GetWeatherForecast");
 
-    // # Add this Serilog before mapping endpoints.
     app.UseSerilogRequestLogging();
     app.UseExceptionHandler();
+    app.UseAuthentication();
+    app.UseAuthorization();
     app.MapProductEndpoints();
     app.Run();
 

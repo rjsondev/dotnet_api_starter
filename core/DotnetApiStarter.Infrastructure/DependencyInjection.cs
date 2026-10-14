@@ -1,6 +1,7 @@
 ﻿using DotnetApiStarter.Application;
 using DotnetApiStarter.Application.Common.Behaviors;
 using DotnetApiStarter.Application.Common.Interfaces;
+using DotnetApiStarter.Infrastructure.Authentication;
 using DotnetApiStarter.Infrastructure.Persistence;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,9 @@ public static class DependencyInjection
 
         // # Register the IApplicationDbContext interface with the AppDbContext implementation
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<AppDbContext>());
+
+        // # Register the JwtTokenService for generating JWT tokens
+        services.AddScoped<IJwtTokenService, JwtTokenService>();
 
         return services;
     }
