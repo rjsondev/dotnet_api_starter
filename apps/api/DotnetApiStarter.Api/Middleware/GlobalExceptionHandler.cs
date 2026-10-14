@@ -39,18 +39,6 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
                                 .ToArray());
                 break;
 
-            //case KeyNotFoundException:
-            //    problemDetails.Status = StatusCodes.Status404NotFound;
-            //    problemDetails.Title = "Resource not found";
-            //    problemDetails.Detail = exception.Message;
-            //    break;
-
-            //case InvalidOperationException:
-            //    problemDetails.Status = StatusCodes.Status409Conflict;
-            //    problemDetails.Title = "Operation failed";
-            //    problemDetails.Detail = exception.Message;
-            //    break;
-
             case NotFoundException:
                 problemDetails.Status = StatusCodes.Status404NotFound;
                 problemDetails.Title = "Resource not found";
@@ -74,6 +62,18 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
                 problemDetails.Title = "An unexpected error occurred.";
                 problemDetails.Detail = "An unexpected error occurred.";
                 break;
+
+            //case KeyNotFoundException:
+            //    problemDetails.Status = StatusCodes.Status404NotFound;
+            //    problemDetails.Title = "Resource not found";
+            //    problemDetails.Detail = exception.Message;
+            //    break;
+
+            //case InvalidOperationException:
+            //    problemDetails.Status = StatusCodes.Status409Conflict;
+            //    problemDetails.Title = "Operation failed";
+            //    problemDetails.Detail = exception.Message;
+            //    break;
         }
 
         httpContext.Response.StatusCode = problemDetails.Status.Value;

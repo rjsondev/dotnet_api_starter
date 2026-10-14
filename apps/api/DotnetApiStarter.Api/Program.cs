@@ -1,4 +1,5 @@
 using DotnetApiStarter.Api.Extensions;
+using DotnetApiStarter.Api.Features.Authentication;
 using DotnetApiStarter.Api.Features.Products;
 using DotnetApiStarter.Api.Middleware;
 using DotnetApiStarter.Infrastructure;
@@ -69,6 +70,7 @@ try
     app.UseExceptionHandler();
     app.UseAuthentication();
     app.UseAuthorization();
+    app.MapAuthEndpoints();
     app.MapProductEndpoints();
     app.Run();
 

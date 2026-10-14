@@ -11,11 +11,11 @@ public class AppDbContext : DbContext, IApplicationDbContext
     {
     }
 
-    public DbSet<User> Users => Set<User>();
+    public DbSet<User> User => Set<User>();
 
-    public DbSet<Role> Roles => Set<Role>();
+    public DbSet<Role> Role => Set<Role>();
 
-    public DbSet<UserRole> UserRoles => Set<UserRole>();
+    public DbSet<UserRole> UserRole => Set<UserRole>();
 
     public DbSet<Product> Product => Set<Product>();
 
