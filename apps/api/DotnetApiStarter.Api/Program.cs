@@ -72,10 +72,9 @@ try
     //     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
     // }
 }
-catch (Exception ex)
+catch (Exception ex) when (!ex.GetType().Name.Equals("HostAbortedException", StringComparison.Ordinal))
 {
     Log.Fatal(ex, "Unhandled exception");
-
 }
 finally
 {

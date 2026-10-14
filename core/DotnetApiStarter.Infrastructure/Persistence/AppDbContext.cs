@@ -11,12 +11,20 @@ public class AppDbContext : DbContext, IApplicationDbContext
     {
     }
 
+    public DbSet<User> Users => Set<User>();
+
+    public DbSet<Role> Roles => Set<Role>();
+
+    public DbSet<UserRole> UserRoles => Set<UserRole>();
+
     public DbSet<Product> Product => Set<Product>();
 
     public DbSet<Category> Category => Set<Category>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
     }
 }
