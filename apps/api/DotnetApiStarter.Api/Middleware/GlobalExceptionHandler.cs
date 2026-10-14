@@ -55,14 +55,18 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
                 problemDetails.Status = StatusCodes.Status404NotFound;
                 problemDetails.Title = "Resource not found";
                 problemDetails.Detail = exception.Message;
-
                 break;
 
             case ConflictException:
                 problemDetails.Status = StatusCodes.Status409Conflict;
                 problemDetails.Title = "Conflict";
                 problemDetails.Detail = exception.Message;
+                break;
 
+            case UnauthorizedAccessException:
+                problemDetails.Status = StatusCodes.Status401Unauthorized;
+                problemDetails.Title = "Unauthorized";
+                problemDetails.Detail = exception.Message;
                 break;
 
             default:
