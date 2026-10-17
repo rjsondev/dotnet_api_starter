@@ -1,16 +1,19 @@
 ﻿using DotnetApiStarter.Application.Common.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DotnetApiStarter.Application.Features.Products.Queries.GetProducts;
 
 public sealed class GetProductsHandler : IRequestHandler<GetProductsQuery, IReadOnlyList<ProductDto>>
 {
     private readonly IApplicationDbContext _dbContext;
+    private readonly ILogger<GetProductsHandler> _logger;
 
-    public GetProductsHandler(IApplicationDbContext dbContext)
+    public GetProductsHandler(IApplicationDbContext dbContext, ILogger<GetProductsHandler> logger)
     {
         _dbContext = dbContext;
+        _logger = logger;
     }
 
     public async Task<IReadOnlyList<ProductDto>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
