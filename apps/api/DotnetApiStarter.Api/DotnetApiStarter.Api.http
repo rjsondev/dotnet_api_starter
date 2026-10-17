@@ -47,3 +47,20 @@ Content-Type: application/json
 
 ### Delete a Product
 DELETE {{DotnetApiStarter.Api_HostAddress}}/api/product/1
+
+### Login User
+POST {{DotnetApiStarter.Api_HostAddress}}/api/auth/login
+Content-Type: application/json
+{
+  "username": "admin",
+  "password": "admin-password"
+}
+
+### Register User
+POST {{DotnetApiStarter.Api_HostAddress}}/api/auth/register
+Content-Type: application/json
+{
+  "username": "admin1",
+  "email": "admin@example.com",
+  "password": "@admin101"
+}
