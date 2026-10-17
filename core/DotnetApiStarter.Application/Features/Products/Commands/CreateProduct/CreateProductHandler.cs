@@ -3,26 +3,29 @@ using DotnetApiStarter.Application.Common.Interfaces;
 using DotnetApiStarter.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DotnetApiStarter.Application.Features.Products.Commands.CreateProduct;
 
 public sealed class CreateProductHandler : IRequestHandler<CreateProductCommand, CreateProductResult>
 {
     private readonly IApplicationDbContext _dbContext;
+    private readonly ILogger<CreateProductHandler> _logger;
 
-    public CreateProductHandler(IApplicationDbContext dbContext)
+    public CreateProductHandler(IApplicationDbContext dbContext, ILogger<CreateProductHandler> logger)
     {
         _dbContext = dbContext;
+        _logger = logger;
     }
 
     public async Task<CreateProductResult> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Creating product with SKU {Sku}", request.Sku);
+
         var exists = await _dbContext.Product.AnyAsync(x => x.Sku == request.Sku, cancellationToken);
 
         if (exists)
-        {
             throw new ConflictException($"Product SKU '{request.Sku}' already exists.");
-        }
 
         var product = new Product
         {
@@ -41,6 +44,7 @@ public sealed class CreateProductHandler : IRequestHandler<CreateProductCommand,
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
+        _logger.LogInformation("Product {ProductId} created", product.Id);
         return new CreateProductResult(product.Id);
     }
 }

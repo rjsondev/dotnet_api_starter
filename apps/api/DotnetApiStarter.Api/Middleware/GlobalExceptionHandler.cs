@@ -17,7 +17,7 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
 
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
-        _logger.LogError(exception, "An unhandled exception occurred.");
+        _logger.LogError(exception, "Unhandled exception. TraceId: {TraceId}", httpContext.TraceIdentifier);
 
         var problemDetails = new ProblemDetails
         {
@@ -39,6 +39,30 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
                                 .ToArray());
                 break;
 
+            case NotFoundException:
+                problemDetails.Status = StatusCodes.Status404NotFound;
+                problemDetails.Title = "Resource not found";
+                problemDetails.Detail = exception.Message;
+                break;
+
+            case ConflictException:
+                problemDetails.Status = StatusCodes.Status409Conflict;
+                problemDetails.Title = "Conflict";
+                problemDetails.Detail = exception.Message;
+                break;
+
+            case UnauthorizedAccessException:
+                problemDetails.Status = StatusCodes.Status401Unauthorized;
+                problemDetails.Title = "Unauthorized";
+                problemDetails.Detail = exception.Message;
+                break;
+
+            default:
+                problemDetails.Status = StatusCodes.Status500InternalServerError;
+                problemDetails.Title = "An unexpected error occurred.";
+                problemDetails.Detail = "An unexpected error occurred.";
+                break;
+
             //case KeyNotFoundException:
             //    problemDetails.Status = StatusCodes.Status404NotFound;
             //    problemDetails.Title = "Resource not found";
@@ -50,32 +74,11 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
             //    problemDetails.Title = "Operation failed";
             //    problemDetails.Detail = exception.Message;
             //    break;
-
-            case NotFoundException:
-                problemDetails.Status = StatusCodes.Status404NotFound;
-                problemDetails.Title = "Resource not found";
-                problemDetails.Detail = exception.Message;
-
-                break;
-
-            case ConflictException:
-                problemDetails.Status = StatusCodes.Status409Conflict;
-                problemDetails.Title = "Conflict";
-                problemDetails.Detail = exception.Message;
-
-                break;
-
-            default:
-                problemDetails.Status = StatusCodes.Status500InternalServerError;
-                problemDetails.Title = "An unexpected error occurred.";
-                problemDetails.Detail = "An unexpected error occurred.";
-                break;
         }
 
         httpContext.Response.StatusCode = problemDetails.Status.Value;
 
-        await httpContext.Response.WriteAsJsonAsync(
-            ResponseResult<object?>.Fail(problemDetails.Title),
+        await httpContext.Response.WriteAsJsonAsync(ResponseResult<object?>.Fail(problemDetails.Detail),
             cancellationToken);
 
         return true;
