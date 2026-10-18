@@ -85,5 +85,6 @@ catch (Exception ex) when (!ex.GetType().Name.Equals("HostAbortedException", Str
 }
 finally
 {
+    Log.Information("Shutting down DotnetApiStarter API");
     Log.CloseAndFlush();
 }
