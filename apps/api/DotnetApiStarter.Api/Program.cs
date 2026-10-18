@@ -3,6 +3,7 @@ using DotnetApiStarter.Api.Features.Authentication;
 using DotnetApiStarter.Api.Features.Products;
 using DotnetApiStarter.Api.Middleware;
 using DotnetApiStarter.Infrastructure;
+using Microsoft.AspNetCore.RateLimiting;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateBootstrapLogger();
@@ -37,6 +38,18 @@ try
     // # Register JWT authentication and authorization
     builder.Services.AddJwtAuthentication(builder.Configuration);
 
+    // # Register rate limiting policies
+    builder.Services.AddRateLimiter(options =>
+    {
+        options.AddFixedWindowLimiter("LoginPolicy", limiter =>
+        {
+            limiter.PermitLimit = 5;
+            limiter.Window = TimeSpan.FromMinutes(1);
+            limiter.QueueLimit = 0;
+            limiter.AutoReplenishment = true;
+        });
+    });
+
     var app = builder.Build();
 
     // Configure the HTTP request pipeline.
@@ -70,6 +83,7 @@ try
     app.UseExceptionHandler();
     app.UseAuthentication();
     app.UseAuthorization();
+    app.UseRateLimiter();
     app.MapAuthEndpoints();
     app.MapProductEndpoints();
     app.Run();

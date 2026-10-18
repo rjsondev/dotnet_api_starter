@@ -12,8 +12,11 @@ public static class AuthEndpoints
     {
         var group = app.MapGroup("/api/auth").WithTags("Authentication").AllowAnonymous();
 
-        group.MapPost("/login", LoginAsync);
+        group.MapPost("/login", LoginAsync).RequireRateLimiting("LoginPolicy");
         group.MapPost("/register", RegisterAsync);
+
+        // NOTES:
+        //  .RequireRateLimiting("LoginPolicy") - applies the rate limiting policy defined in Program.cs to the login endpoint
 
         return app;
     }

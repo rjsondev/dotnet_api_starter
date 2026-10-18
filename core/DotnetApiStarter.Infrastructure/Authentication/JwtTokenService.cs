@@ -30,10 +30,7 @@ public sealed class JwtTokenService : IJwtTokenService
         }
     }
 
-    public JwtTokenResult GenerateToken(
-        int userId,
-        string username,
-        IEnumerable<string> roles)
+    public JwtTokenResult GenerateToken(int userId, string username, IEnumerable<string> roles)
     {
         var now = DateTime.UtcNow;
         var expiresAt = now.AddMinutes(_options.ExpirationMinutes);
