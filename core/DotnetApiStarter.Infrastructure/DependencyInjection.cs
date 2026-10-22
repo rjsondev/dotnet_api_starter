@@ -2,6 +2,7 @@
 using DotnetApiStarter.Application.Common.Behaviors;
 using DotnetApiStarter.Application.Common.Interfaces;
 using DotnetApiStarter.Infrastructure.Authentication;
+using DotnetApiStarter.Infrastructure.Caching;
 using DotnetApiStarter.Infrastructure.Persistence;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,10 @@ public static class DependencyInjection
         {
             options.UseSqlServer(connectionString);
         });
+
+        // # Register the Redis cache service using StackExchange.Redis
+        services.AddStackExchangeRedisCache(options => { options.Configuration = configuration.GetConnectionString("Redis"); options.InstanceName = "dotnetapistarter:"; });
+        services.AddScoped<ICacheService, RedisCacheService>();
 
         // # Register the IApplicationDbContext interface with the AppDbContext implementation
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<AppDbContext>());

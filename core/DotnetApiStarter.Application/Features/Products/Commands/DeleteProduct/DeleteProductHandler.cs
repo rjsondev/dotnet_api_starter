@@ -7,13 +7,18 @@ namespace DotnetApiStarter.Application.Features.Products.Commands.DeleteProduct;
 
 public sealed class DeleteProductHandler : IRequestHandler<DeleteProductCommand, DeleteProductResult>
 {
+    private const string CacheKey = "products:all";
+    private readonly ICacheService _cache;
     private readonly IApplicationDbContext _dbContext;
-    private readonly ILogger<DeleteProductHandler> _logger;
+    private readonly ILogger<DeleteProductHandler> _logger;    
 
-    public DeleteProductHandler(IApplicationDbContext dbContext, ILogger<DeleteProductHandler> logger)
+    public DeleteProductHandler(ILogger<DeleteProductHandler> logger
+        , IApplicationDbContext dbContext
+        , ICacheService cache)
     {
         _dbContext = dbContext;
         _logger = logger;
+        _cache = cache;
     }
 
     public async Task<DeleteProductResult> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
@@ -28,6 +33,8 @@ public sealed class DeleteProductHandler : IRequestHandler<DeleteProductCommand,
         _dbContext.Product.Remove(product);
 
         await _dbContext.SaveChangesAsync(cancellationToken);
+
+        await _cache.RemoveAsync(CacheKey, cancellationToken);
 
         _logger.LogInformation("Product with ID {ProductId} has been deleted", request.Id);
         return new DeleteProductResult(product.Id);

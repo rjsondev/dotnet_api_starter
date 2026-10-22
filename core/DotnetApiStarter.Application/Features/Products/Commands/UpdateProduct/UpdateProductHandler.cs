@@ -8,13 +8,18 @@ namespace DotnetApiStarter.Application.Features.Products.Commands.UpdateProduct;
 
 public sealed class UpdateProductHandler : IRequestHandler<UpdateProductCommand, UpdateProductResult>
 {
+    private const string CacheKey = "products:all";
+    private readonly ICacheService _cache;
     private readonly IApplicationDbContext _dbContext;
-    private readonly ILogger<UpdateProductHandler> _logger;
+    private readonly ILogger<UpdateProductHandler> _logger;    
 
-    public UpdateProductHandler(IApplicationDbContext dbContext, ILogger<UpdateProductHandler> logger)
+    public UpdateProductHandler(ILogger<UpdateProductHandler> logger
+        , IApplicationDbContext dbContext
+        , ICacheService cache)
     {
         _dbContext = dbContext;
         _logger = logger;
+        _cache = cache;
     }
 
     public async Task<UpdateProductResult> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
@@ -44,6 +49,8 @@ public sealed class UpdateProductHandler : IRequestHandler<UpdateProductCommand,
         product.ModifiedById = request.ModifiedById;
 
         await _dbContext.SaveChangesAsync(cancellationToken);
+
+        await _cache.RemoveAsync(CacheKey, cancellationToken);
 
         _logger.LogInformation("Product with ID {ProductId} updated successfully", product.Id);
         return new UpdateProductResult(product.Id);

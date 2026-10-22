@@ -8,13 +8,18 @@ namespace DotnetApiStarter.Application.Features.Products.Commands.SetProductStat
 
 public sealed class SetProductStatusHandler : IRequestHandler<SetProductStatusCommand, SetProductStatusResult>
 {
+    private const string CacheKey = "products:all";
+    private readonly ICacheService _cache;
     private readonly IApplicationDbContext _dbContext;
-    private readonly ILogger<SetProductStatusHandler> _logger;
+    private readonly ILogger<SetProductStatusHandler> _logger;    
 
-    public SetProductStatusHandler(IApplicationDbContext dbContext, ILogger<SetProductStatusHandler> logger)
+    public SetProductStatusHandler(ILogger<SetProductStatusHandler> logger
+        , IApplicationDbContext dbContext
+        , ICacheService cache)
     {
         _dbContext = dbContext;
         _logger = logger;
+        _cache = cache;
     }
 
     public async Task<SetProductStatusResult> Handle(SetProductStatusCommand request, CancellationToken cancellationToken)
@@ -31,6 +36,8 @@ public sealed class SetProductStatusHandler : IRequestHandler<SetProductStatusCo
         product.ModifiedById = request.ModifiedById;
 
         await _dbContext.SaveChangesAsync(cancellationToken);
+
+        await _cache.RemoveAsync(CacheKey, cancellationToken);
 
         _logger.LogInformation("Product status for product with ID {ProductId} has been set to {IsActive}", request.Id, request.IsActive);
         return new SetProductStatusResult(product.Id);
