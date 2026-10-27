@@ -1,13 +1,23 @@
-﻿namespace DotnetApiStarter.Application.Common.Interfaces;
+﻿using DotnetApiStarter.Application.Common.Caching;
+
+namespace DotnetApiStarter.Application.Common.Interfaces;
 
 public interface ICacheService
 {
-    Task<T?> GetAsync<T>(string key,
+    Task<CacheResult<T>> GetAsync<T>(
+        string key,
         CancellationToken cancellationToken = default);
 
-    Task SetAsync<T>(string key, T value, TimeSpan expiration,
+    Task<bool> SetAsync<T>(
+        string key,
+        T value,
+        TimeSpan expiration,
         CancellationToken cancellationToken = default);
 
-    Task RemoveAsync(string key,
+    Task<bool> RemoveAsync(
+        string key,
+        CancellationToken cancellationToken = default);
+
+    Task<bool> IsAvailableAsync(
         CancellationToken cancellationToken = default);
 }

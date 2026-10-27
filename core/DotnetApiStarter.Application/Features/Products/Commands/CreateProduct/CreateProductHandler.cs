@@ -1,4 +1,5 @@
 ﻿using DotnetApiStarter.Application.Common.Exceptions;
+using DotnetApiStarter.Application.Common.Extensions;
 using DotnetApiStarter.Application.Common.Interfaces;
 using DotnetApiStarter.Domain.Entities;
 using MediatR;
@@ -26,9 +27,7 @@ public sealed class CreateProductHandler : IRequestHandler<CreateProductCommand,
     public async Task<CreateProductResult> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating product with SKU {Sku}", request.Sku);
-
         var exists = await _dbContext.Product.AnyAsync(x => x.Sku == request.Sku, cancellationToken);
-
         if (exists)
             throw new ConflictException($"Product SKU '{request.Sku}' already exists.");
 
@@ -48,11 +47,9 @@ public sealed class CreateProductHandler : IRequestHandler<CreateProductCommand,
         _dbContext.Product.Add(product);
 
         await _dbContext.SaveChangesAsync(cancellationToken);
-        
-        // Invalidate the product cache
-        await _cache.RemoveAsync(CacheKey, cancellationToken);
-
         _logger.LogInformation("Product {ProductId} created", product.Id);
-        return new CreateProductResult(product.Id);
+
+        var cacheResult = await _cache.RemoveFromCacheAsync(CacheKey, product, cancellationToken);        
+        return new CreateProductResult(product.Id, cacheResult.IsAvailable ? "Working" : "Unavailable");
     }
 }

@@ -43,15 +43,17 @@ public static class ProductEndpoints
     private static async Task<IResult> GetProducts(ISender sender, CancellationToken cancellationToken)
     {
         var result = await sender.Send(new GetProductsQuery(), cancellationToken);
+        var response = ResponseResult<GetProductsResult>.Ok(result, "Products retrieved successfully.");
 
-        return Results.Ok(ResponseResult<IReadOnlyList<ProductDto>>.Ok(result, "Products retrieved successfully."));
+        return Results.Ok(response);
     }
 
     private static async Task<IResult> GetProductsAuthenticated(ISender sender, CancellationToken cancellationToken)
     {
         var result = await sender.Send(new GetProductsQuery(), cancellationToken);
+        var response = ResponseResult<GetProductsResult>.Ok(result, "Products retrieved successfully.");
 
-        return Results.Ok(ResponseResult<IReadOnlyList<ProductDto>>.Ok(result, "Products retrieved successfully."));
+        return Results.Ok(response);
     }
 
     private static async Task<IResult> GetProductsPaged(

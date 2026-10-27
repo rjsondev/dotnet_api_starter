@@ -1,4 +1,5 @@
 ﻿using DotnetApiStarter.Application.Common.Exceptions;
+using DotnetApiStarter.Application.Common.Extensions;
 using DotnetApiStarter.Application.Common.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -33,10 +34,9 @@ public sealed class DeleteProductHandler : IRequestHandler<DeleteProductCommand,
         _dbContext.Product.Remove(product);
 
         await _dbContext.SaveChangesAsync(cancellationToken);
-
-        await _cache.RemoveAsync(CacheKey, cancellationToken);
-
         _logger.LogInformation("Product with ID {ProductId} has been deleted", request.Id);
-        return new DeleteProductResult(product.Id);
+
+        var cacheResult = await _cache.RemoveFromCacheAsync(CacheKey, product, cancellationToken);
+        return new DeleteProductResult(product.Id, cacheResult.IsAvailable ? "Working" : "Unavailable");
     }
 }

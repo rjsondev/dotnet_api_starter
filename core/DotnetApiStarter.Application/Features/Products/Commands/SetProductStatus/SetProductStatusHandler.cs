@@ -1,4 +1,5 @@
 ﻿using DotnetApiStarter.Application.Common.Exceptions;
+using DotnetApiStarter.Application.Common.Extensions;
 using DotnetApiStarter.Application.Common.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -36,10 +37,9 @@ public sealed class SetProductStatusHandler : IRequestHandler<SetProductStatusCo
         product.ModifiedById = request.ModifiedById;
 
         await _dbContext.SaveChangesAsync(cancellationToken);
-
-        await _cache.RemoveAsync(CacheKey, cancellationToken);
-
         _logger.LogInformation("Product status for product with ID {ProductId} has been set to {IsActive}", request.Id, request.IsActive);
-        return new SetProductStatusResult(product.Id);
+
+        var cacheResult = await _cache.RemoveFromCacheAsync(CacheKey, product, cancellationToken);
+        return new SetProductStatusResult(product.Id, cacheResult.IsAvailable ? "Working" : "Unavailable");
     }
 }

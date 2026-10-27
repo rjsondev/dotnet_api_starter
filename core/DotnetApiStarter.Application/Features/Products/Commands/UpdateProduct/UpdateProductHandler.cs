@@ -1,4 +1,5 @@
 ﻿using DotnetApiStarter.Application.Common.Exceptions;
+using DotnetApiStarter.Application.Common.Extensions;
 using DotnetApiStarter.Application.Common.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -49,10 +50,9 @@ public sealed class UpdateProductHandler : IRequestHandler<UpdateProductCommand,
         product.ModifiedById = request.ModifiedById;
 
         await _dbContext.SaveChangesAsync(cancellationToken);
-
-        await _cache.RemoveAsync(CacheKey, cancellationToken);
-
         _logger.LogInformation("Product with ID {ProductId} updated successfully", product.Id);
-        return new UpdateProductResult(product.Id);
+
+        var cacheResult = await _cache.RemoveFromCacheAsync(CacheKey, product, cancellationToken);
+        return new UpdateProductResult(product.Id, cacheResult.IsAvailable ? "Working" : "Unavailable");
     }
 }
