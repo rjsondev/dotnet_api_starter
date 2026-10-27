@@ -8,4 +8,10 @@
     <Project Path="core/DotnetApiStarter.Domain/DotnetApiStarter.Domain.csproj" />
     <Project Path="core/DotnetApiStarter.Infrastructure/DotnetApiStarter.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/dotnetapistarter.Api.Tests/dotnetapistarter.Api.Tests.csproj" />
+    <Project Path="tests/dotnetapistarter.Application.Tests/dotnetapistarter.Application.Tests.csproj" />
+    <Project Path="tests/dotnetapistarter.Domain.Tests/dotnetapistarter.Domain.Tests.csproj" />
+    <Project Path="tests/dotnetapistarter.Infrastructure.Tests/dotnetapistarter.Infrastructure.Tests.csproj" />
+  </Folder>
 </Solution>
