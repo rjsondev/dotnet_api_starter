@@ -30,10 +30,7 @@ public sealed class JwtTokenService : IJwtTokenService
         }
     }
 
-    public JwtTokenResult GenerateToken(
-        int userId,
-        string username,
-        IEnumerable<string> roles)
+    public JwtTokenResult GenerateToken(int userId, string username, IEnumerable<string> roles)
     {
         var now = DateTime.UtcNow;
         var expiresAt = now.AddMinutes(_options.ExpirationMinutes);
@@ -44,19 +41,13 @@ public sealed class JwtTokenService : IJwtTokenService
             new(ClaimTypes.Name, username)
         };
 
-        foreach (var role in roles.Distinct(
-                     StringComparer.OrdinalIgnoreCase))
+        foreach (var role in roles.Distinct(StringComparer.OrdinalIgnoreCase))
         {
             claims.Add(new Claim(ClaimTypes.Role, role));
         }
 
-        var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(_options.Key));
-
-        var credentials = new SigningCredentials(
-            key,
-            SecurityAlgorithms.HmacSha256);
-
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.Key));
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
         var token = new JwtSecurityToken(
             issuer: _options.Issuer,
             audience: _options.Audience,

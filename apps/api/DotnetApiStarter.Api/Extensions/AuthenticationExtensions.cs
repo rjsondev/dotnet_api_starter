@@ -37,26 +37,26 @@ public static class AuthenticationExtensions
                     {
                         ValidateIssuer = true,
                         ValidIssuer = jwtOptions.Issuer,
-
                         ValidateAudience = true,
                         ValidAudience = jwtOptions.Audience,
-
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes(jwtOptions.Key)),
-
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key)),
                         ValidateLifetime = true,
                         ClockSkew = TimeSpan.FromSeconds(30),
-
-                        RoleClaimType =
-                            System.Security.Claims.ClaimTypes.Role,
-
-                        NameClaimType =
-                            System.Security.Claims.ClaimTypes.Name
+                        RoleClaimType = System.Security.Claims.ClaimTypes.Role,
+                        NameClaimType = System.Security.Claims.ClaimTypes.Name
                     };
             });
 
-        services.AddAuthorization();
+        //services.AddAuthorization();
+        services
+            .AddAuthorizationBuilder()
+            .AddPolicy("AuthenticatedUser", policy => policy.RequireAuthenticatedUser())
+            .AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"))
+            .AddPolicy("RegularOnly", policy => policy.RequireRole("Regular"))
+            .AddPolicy("InventoryAccess", policy => policy.RequireRole("Admin", "InventoryManager"))
+            .AddPolicy("SalesAccess", policy => policy.RequireRole("Admin", "Sales"))
+            .AddPolicy("RegularSales", policy => policy.RequireRole("Regular", "Sales"));
 
         return services;
     }

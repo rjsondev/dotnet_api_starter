@@ -1,3 +1,3 @@
 ﻿namespace DotnetApiStarter.Application.Features.Products.Commands.DeleteProduct;
 
-public sealed record DeleteProductResult(int Id);
+public sealed record DeleteProductResult(int Id, string CacheStatus);

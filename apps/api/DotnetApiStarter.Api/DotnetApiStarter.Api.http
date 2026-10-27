@@ -1,7 +1,25 @@
 @DotnetApiStarter.Api_HostAddress = http://localhost:5033
+@token = paste_access_token
 
 GET {{DotnetApiStarter.Api_HostAddress}}/weatherforecast/
 Accept: application/json
+
+### Login User
+POST {{DotnetApiStarter.Api_HostAddress}}/api/auth/login
+Content-Type: application/json
+{
+  "username": "user",
+  "password": "@user101"
+}
+
+### Register User
+POST {{DotnetApiStarter.Api_HostAddress}}/api/auth/register
+Content-Type: application/json
+{
+  "username": "admin",
+  "email": "admin@example.com",
+  "password": "@admin101"
+}
 
 ### Create a New Product
 POST {{DotnetApiStarter.Api_HostAddress}}/api/product
@@ -16,8 +34,26 @@ Content-Type: application/json
   "createdbyid": 1
 }
 
+### Create a New Product with Authorization
+POST {{DotnetApiStarter.Api_HostAddress}}/api/product
+Content-Type: application/json
+Authorization: Bearer {{token}}
+{
+  "sku": "LAPTOP-001",
+  "barcode": "laptop-001",
+  "name": "Gaming Laptop",
+  "description": "Gaming laptop",
+  "unitprice": 45000,
+  "reorderlevel": 5,
+  "createdbyid": 1
+}
+
 ### Get Products
 GET {{DotnetApiStarter.Api_HostAddress}}/api/product
+
+### Get Products Authenticated
+GET {{DotnetApiStarter.Api_HostAddress}}/api/product/auth
+Authorization: Bearer {{token}}
 
 ### Get Products by Page
 GET {{DotnetApiStarter.Api_HostAddress}}/api/product/paged?pageNumber=1&pageSize=20
@@ -48,19 +84,3 @@ Content-Type: application/json
 ### Delete a Product
 DELETE {{DotnetApiStarter.Api_HostAddress}}/api/product/1
 
-### Login User
-POST {{DotnetApiStarter.Api_HostAddress}}/api/auth/login
-Content-Type: application/json
-{
-  "username": "admin",
-  "password": "admin-password"
-}
-
-### Register User
-POST {{DotnetApiStarter.Api_HostAddress}}/api/auth/register
-Content-Type: application/json
-{
-  "username": "admin1",
-  "email": "admin@example.com",
-  "password": "@admin101"
-}

@@ -38,10 +38,10 @@ public sealed class RegisterHandler : IRequestHandler<RegisterCommand, RegisterR
         if (emailExists)
             throw new ConflictException("Email is already registered.");
 
-        var salesRole = await _dbContext.Role.SingleOrDefaultAsync(r => r.Name == "Sales", cancellationToken);
+        var regularRole = await _dbContext.Role.SingleOrDefaultAsync(r => r.Name == "Regular", cancellationToken);
 
-        if (salesRole is null)
-            throw new InvalidOperationException("The Sales role has not been seeded.");
+        if (regularRole is null)
+            throw new InvalidOperationException("The Regular role has not been seeded.");
 
         var user = new User
         {
@@ -55,7 +55,7 @@ public sealed class RegisterHandler : IRequestHandler<RegisterCommand, RegisterR
         user.UserRoles.Add(new UserRole
         {
             User = user,
-            Role = salesRole
+            Role = regularRole
         });
 
         _dbContext.User.Add(user);

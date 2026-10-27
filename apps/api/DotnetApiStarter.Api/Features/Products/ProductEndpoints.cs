@@ -21,6 +21,13 @@ public static class ProductEndpoints
         group.MapPut("/{id:int}", UpdateProduct);
         group.MapPatch("/{id:int}/status", SetProductStatus);
         group.MapDelete("/{id:int}", DeleteProduct);
+        group.MapGet("/auth", GetProductsAuthenticated).RequireAuthorization("RegularSales");   // multiple roles
+
+        // NOTES:
+        //  .WithTags("Products") - used for Swagger documentation grouping
+        //  .WithOpenApi() - used to generate OpenAPI documentation for the endpoint
+        // group.MapGet("/auth", GetProductsAuthenticated).RequireAuthorization("AdminOnly");    - Only 1 role
+        // group.MapGet("/auth", GetProductsAuthenticated).RequireAuthorization("AuthenticatedUser");    - Any authenticated user
 
         return app;
     }
@@ -36,8 +43,17 @@ public static class ProductEndpoints
     private static async Task<IResult> GetProducts(ISender sender, CancellationToken cancellationToken)
     {
         var result = await sender.Send(new GetProductsQuery(), cancellationToken);
+        var response = ResponseResult<GetProductsResult>.Ok(result, "Products retrieved successfully.");
 
-        return Results.Ok(ResponseResult<IReadOnlyList<ProductDto>>.Ok(result, "Products retrieved successfully."));
+        return Results.Ok(response);
+    }
+
+    private static async Task<IResult> GetProductsAuthenticated(ISender sender, CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new GetProductsQuery(), cancellationToken);
+        var response = ResponseResult<GetProductsResult>.Ok(result, "Products retrieved successfully.");
+
+        return Results.Ok(response);
     }
 
     private static async Task<IResult> GetProductsPaged(
