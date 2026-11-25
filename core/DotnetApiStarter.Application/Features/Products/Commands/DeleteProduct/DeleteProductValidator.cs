@@ -7,7 +7,6 @@ public sealed class DeleteProductValidator : AbstractValidator<DeleteProductComm
     public DeleteProductValidator()
     {
         RuleFor(x => x.Id)
-            .NotEmpty()
             .GreaterThanOrEqualTo(0);
     }
 }
