@@ -39,8 +39,13 @@ public class CreateProductHandlerTests
     {
         using var dbContext = CreateDbContext();
 
-        _cacheMock.Setup(x => x.IsAvailableAsync(It.IsAny<CancellationToken>())).ReturnsAsync(true);
-        _cacheMock.Setup(x => x.RemoveAsync("products:all", It.IsAny<CancellationToken>())).ReturnsAsync(true);
+        _cacheMock
+            .Setup(x => x.IsAvailableAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
+
+        _cacheMock
+            .Setup(x => x.RemoveAsync("products:all", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
 
         var handler = new CreateProductHandler(_loggerMock.Object, dbContext, _cacheMock.Object);
         var result = await handler.Handle(CreateCommand(), CancellationToken.None);
@@ -84,7 +89,9 @@ public class CreateProductHandlerTests
     {
         using var dbContext = CreateDbContext();
 
-        _cacheMock.Setup(x => x.IsAvailableAsync(It.IsAny<CancellationToken>())).ReturnsAsync(false);
+        _cacheMock
+            .Setup(x => x.IsAvailableAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
 
         var handler = new CreateProductHandler(_loggerMock.Object, dbContext, _cacheMock.Object);
         var result = await handler.Handle(CreateCommand(), CancellationToken.None);

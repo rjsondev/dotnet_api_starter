@@ -54,10 +54,12 @@ public sealed class UpdateProductHandlerTests
 
     private void SetupCacheAvailable()
     {
-        _cacheMock.Setup(x => x.IsAvailableAsync(It.IsAny<CancellationToken>()))
+        _cacheMock
+            .Setup(x => x.IsAvailableAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
 
-        _cacheMock.Setup(x => x.RemoveAsync("products:all", It.IsAny<CancellationToken>()))
+        _cacheMock
+            .Setup(x => x.RemoveAsync("products:all", It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
     }
 
@@ -102,9 +104,7 @@ public sealed class UpdateProductHandlerTests
 
         var handler = new UpdateProductHandler(_loggerMock.Object, dbContext, _cacheMock.Object);
 
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(
-            CreateCommand(999),
-            CancellationToken.None));
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(CreateCommand(999), CancellationToken.None));
 
         _cacheMock.Verify(
             x => x.IsAvailableAsync(It.IsAny<CancellationToken>()),
@@ -152,15 +152,15 @@ public sealed class UpdateProductHandlerTests
         dbContext.Product.Add(product);
         await dbContext.SaveChangesAsync();
 
-        _cacheMock.Setup(x => x.IsAvailableAsync(It.IsAny<CancellationToken>()))
+        _cacheMock
+            .Setup(x => x.IsAvailableAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
 
         var handler = new UpdateProductHandler(_loggerMock.Object, dbContext, _cacheMock.Object);
 
         var result = await handler.Handle(CreateCommand(product.Id), CancellationToken.None);
 
-        var updatedProduct = await dbContext.Product
-            .FirstAsync(x => x.Id == product.Id);
+        var updatedProduct = await dbContext.Product.FirstAsync(x => x.Id == product.Id);
 
         Assert.Equal("Updated Keyboard", updatedProduct.Name);
         Assert.Equal("Unavailable", result.CacheStatus);
